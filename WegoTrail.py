@@ -4,11 +4,11 @@ from unsplash.api import Api
 from unsplash.auth import Auth
 import json
 
-os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="./WegoTrialProject-05a198e9d283.json"
+os.environ["GOOGLE_APPLICATION_CREDENTIALS"]=""
 
-client_id = "ea3d44b5738d41b38e911d2b416ecd6d7e0198f79f860294f3490f35ba9cab8d"
-client_secret = "2dd410722fb3aa7bef18e84f3ff70d9855875b622bec63815598c17320dfa73a"
-redirect_uri = "urn:ietf:wg:oauth:2.0:oob"
+client_id = ""
+client_secret = ""
+redirect_uri = ""
 code = ""
             
 auth = Auth(client_id, client_secret, redirect_uri, code=code)
