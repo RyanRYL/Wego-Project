@@ -10,6 +10,10 @@ redirect_uri = ''
 code = ''
 auth = Auth(client_id, client_secret, redirect_uri, code=code)
 api = Api(auth)
+
+dataset_id = 'Trial'
+table_id = 'results'
+
 def insert(dataset_id, table_id, destinations, links):
     bigquery_client = bigquery.Client()
     dataset_ref = bigquery_client.dataset(dataset_id)
@@ -59,17 +63,27 @@ def create_table(dataset_id, table_id, project=None):
     )
     table = bigquery_client.create_table(table)
 #   print('Created table {} in dataset {}.'.format(table_id, dataset_id))
-def clear_table():
+
+def delete_table(dataset_id, table_id, project=None):
+    """Deletes a table in a given dataset.
+
+    If no project is specified, then the currently active project is used.
+    """
+    bigquery_client = bigquery.Client(project=project)
+    dataset_ref = bigquery_client.dataset(dataset_id)
+    table_ref = dataset_ref.table(table_id)
+
+    bigquery_client.delete_table(table_ref)
+
+    print('Table {}:{} deleted.'.format(dataset_id, table_id))
+    
+def makeQuery():
     client = bigquery.Client()
     job_config = bigquery.QueryJobConfig()
     job_config.use_legacy_sql = False
-    query_job = client.query("""DELETE  FROM Trial.results WHERE true""", job_config=job_config)
-    results = query_job.result()
-def makeQuery():
-    client = bigquery.Client()
     query_job = client.query("""SELECT arrival_city_name, times
-     FROM (SELECT arrival_city_name, COUNT (distinct search_id) AS times, RANK() OVER ( ORDER BY (Count(DISTINCT search_id)) DESC ) AS R FROM Trial.flights_searches WHERE$
-    WHERE X.R <= 5""")
+     FROM (SELECT arrival_city_name, COUNT (distinct search_id) AS times, RANK() OVER ( ORDER BY (Count(DISTINCT search_id)) DESC ) AS R FROM `Trial.flights_clicks201708*` GROUP BY arrival_city_name) AS X
+    WHERE X.R <= 5""", job_config=job_config)
     results = query_job.result()
     all_link = list()
     city = list()
@@ -78,8 +92,8 @@ def makeQuery():
         all_link.append(getPhoto(row.arrival_city_name))
         city.append(row.arrival_city_name)
 
-    insert('Trial', 'results', city, all_link)
+   insert(dataset_id, table_id, city, all_link)
     
-#clear_table()
-create_table('Trial', 'results')
+delete_table(dataset_id, table_id)
+create_table(dataset_id, table_id)
 makeQuery()
