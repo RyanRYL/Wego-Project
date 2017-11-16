@@ -2,7 +2,7 @@ from google.cloud import bigquery
 from unsplash.api import Api
 from unsplash.auth import Auth
 import json
-#os.environ["GOOGLE_APPLICATION_CREDENTIALS"]="~/gcloudstuff/apikey.json"
+
 GOOGLE_APPLICATION_CREDENTIALS = ''
 client_id = ''
 client_secret = ''
