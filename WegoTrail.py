@@ -40,9 +40,12 @@ def getPhoto(city_name):
         results = api.search.photos(city_name)
         total = results['total']
         photo = results['results']
-        try:
-            for number in range(0, total):
-                link.append(photo[number].id)
+          if totalt == 0:
+                e = 'No photo'
+                link.append(e)
+            else:
+                for number in range(0, total):
+                    link.append(photo[number].id)
         except:
             print('')
         finally :
@@ -65,10 +68,7 @@ def create_table(dataset_id, table_id, project=None):
 #   print('Created table {} in dataset {}.'.format(table_id, dataset_id))
 
 def delete_table(dataset_id, table_id, project=None):
-    """Deletes a table in a given dataset.
-
-    If no project is specified, then the currently active project is used.
-    """
+   
     bigquery_client = bigquery.Client(project=project)
     dataset_ref = bigquery_client.dataset(dataset_id)
     table_ref = dataset_ref.table(table_id)
